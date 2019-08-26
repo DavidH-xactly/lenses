@@ -1,3 +1,5 @@
+import { set } from "ramda";
+
 import {
   UPDATE_NAME,
   UPDATE_AGE,
@@ -5,6 +7,14 @@ import {
   UPDATE_EMAIL,
   UPDATE_HOBBIES
 } from "../shared/constants";
+import {
+  nameLens,
+  ageLens,
+  languagesLens,
+  emailLens,
+  personalHobbiesLens,
+  workHobbiesLens
+} from "./lens-path";
 
 const initialState = {
   otherUnusedProp: "for example only",
@@ -20,48 +30,52 @@ const initialState = {
   }
 };
 
-const updateName = (state, name) => ({
-  ...state,
-  profile: { ...state.profile, name }
-});
-const updateAge = (state, age) => ({
-  ...state,
-  profile: { ...state.profile, age }
-});
-const updateEmail = (state, email) => ({
-  ...state,
-  profile: { ...state.profile, email }
-});
-const updateHobbies = (state, hobbies) => {
-  let currentState = { ...state };
-
-  return {
-    ...currentState,
-    profile: {
-      ...currentState.profile,
-      hobbies: { personal: [...hobbies.personal], work: [...hobbies.work] }
-    }
-  };
-};
-
-const updateLanguages = (state, languages) => ({
-  ...state,
-  profile: { ...state.profile, languages }
-});
-
 export default function(state = initialState, action) {
   switch (action.type) {
     case UPDATE_NAME:
-      return updateName(state, action.payload);
+      return set(nameLens, action.payload, state);
     case UPDATE_AGE:
-      return updateAge(state, action.payload);
+      return set(ageLens, action.payload, state);
     case UPDATE_LANGUAGES:
-      return updateLanguages(state, action.payload);
+      return set(languagesLens, action.payload, state);
     case UPDATE_EMAIL:
-      return updateEmail(state, action.payload);
+      return set(emailLens, action.payload, state);
     case UPDATE_HOBBIES:
-      return updateHobbies(state, action.payload);
+      const personalUpdated = set(
+        personalHobbiesLens,
+        action.payload.personal,
+        state
+      );
+      return set(workHobbiesLens, action.payload.work, personalUpdated);
     default:
-      return { ...state };
+      return state;
   }
 }
+
+// const updateName = (state, name) => set(nameLens, name, state);
+// const updateAge = (state, age) => set(ageLens, age, state);
+// const updateEmail = (state, email) => set(emailLens, email, state);
+// const updateHobbies = (state, hobbies) => {
+//   const updatedPersonal = set(personalHobbiesLens, hobbies.personal, state);
+//   return set(workHobbiesLens, hobbies.work, updatedPersonal);
+// };
+
+// const updateLanguages = (state, languages) =>
+//   set(languagesLens, languages, state);
+
+// export default function(state = initialState, action) {
+//   switch (action.type) {
+//     case UPDATE_NAME:
+//       return updateName(state, action.payload);
+//     case UPDATE_AGE:
+//       return updateAge(state, action.payload);
+//     case UPDATE_LANGUAGES:
+//       return updateLanguages(state, action.payload);
+//     case UPDATE_EMAIL:
+//       return updateEmail(state, action.payload);
+//     case UPDATE_HOBBIES:
+//       return updateHobbies(state, action.payload);
+//     default:
+//       return { ...state };
+//   }
+// }

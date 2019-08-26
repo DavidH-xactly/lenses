@@ -13,6 +13,7 @@ const ProfileData = () => {
     hobbies: { personal, work },
     languages
   } = useSelector(state => state.profile.profile);
+
   return (
     <ProfileLayout>
       <DataContainer className="data-container">

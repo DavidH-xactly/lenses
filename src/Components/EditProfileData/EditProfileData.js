@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import * as _ from "lodash";
 import styled from "styled-components";
 
 import ProfileLayout from "../ProfileLayout";
@@ -36,6 +35,7 @@ const EditProfileData = () => {
   }, [profile, setFormFields]);
 
   const dispatch = useDispatch();
+
   const onChangeStandard = e => {
     setFormFields({
       ...formFields,
