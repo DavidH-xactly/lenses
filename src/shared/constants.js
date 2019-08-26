@@ -1,0 +1,5 @@
+export const UPDATE_NAME = "UPDATE_NAME";
+export const UPDATE_AGE = "UPDATE_AGE";
+export const UPDATE_EMAIL = "UPDATE_EMAIL";
+export const UPDATE_HOBBIES = "UPDATE_HOBBIES";
+export const UPDATE_LANGUAGES = "UPDATE_LANGUAGES";

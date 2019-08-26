@@ -1,0 +1,36 @@
+.Profile-logo {
+  animation: Profile-logo-spin infinite 20s linear;
+  height: 100%;
+  pointer-events: none;
+}
+
+.Profile {
+  background-color: #282c34;
+  height: 10vh;
+  width: 100vw;
+  display: flex;
+  font-size: calc(10px + 2vmin);
+  color: darkgray;
+}
+
+a,
+a:active,
+a:visited {
+  color: white;
+}
+
+.profile-layout {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+
+@keyframes Profile-logo-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
