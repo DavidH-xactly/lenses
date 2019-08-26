@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import { lensPath, lensProp, set, over, view } from "ramda";
 
 import ProfileLayout from "../ProfileLayout";
 import { DataContainer } from "../../shared";
@@ -26,6 +27,17 @@ const EditProfileData = () => {
     languages: []
   });
 
+  const pathMap = {
+    age: lensProp("age"),
+    name: lensProp("name"),
+    email: lensProp("email"),
+    hobbies: {
+      personal: lensPath(["hobbies", "personal"]),
+      work: lensPath(["hobbies", "work"])
+    },
+    languages: lensProp("languages")
+  };
+
   const profile = useSelector(state => state.profile.profile);
 
   useEffect(() => {
@@ -36,33 +48,33 @@ const EditProfileData = () => {
 
   const dispatch = useDispatch();
 
-  const onChangeStandard = e => {
-    setFormFields({
-      ...formFields,
-      [e.target.id]: e.target.value
-    });
+  const onChangeStandard = e =>
+    setFormFields(set(pathMap[e.target.id], e.target.value, formFields));
+
+  const swapItem = (arr, index, value) => {
+    const copy = [...arr];
+    copy.splice(index, 1, value);
+    return copy;
   };
 
   const onChangeHobbies = e => {
-    const dataCopy = [...formFields.hobbies[e.target.getAttribute("name")]];
-    dataCopy.splice(e.target.getAttribute("data-index"), 1, e.target.value);
-    const newHobbies = {
-      ...formFields.hobbies,
-      [e.target.getAttribute("name")]: dataCopy
-    };
-    setFormFields({
-      ...formFields,
-      hobbies: newHobbies
-    });
+    const path = pathMap.hobbies[e.target.getAttribute("name")];
+    const dataCopy = swapItem(
+      view(path, formFields),
+      e.target.getAttribute("data-index"),
+      e.target.value
+    );
+    setFormFields(set(path, dataCopy, formFields));
   };
 
   const onChangeLanguages = e => {
-    const dataCopy = [...formFields.languages];
-    dataCopy.splice(e.target.getAttribute("data-index"), 1, e.target.value);
-    setFormFields({
-      ...formFields,
-      languages: dataCopy
-    });
+    const path = pathMap[e.target.getAttribute("name")];
+    const dataCopy = swapItem(
+      view(path, formFields),
+      e.target.getAttribute("data-index"),
+      e.target.value
+    );
+    setFormFields(set(path, dataCopy, formFields));
   };
   const handleFormSubmit = () => {
     dispatch({ type: UPDATE_AGE, payload: formFields.age });
