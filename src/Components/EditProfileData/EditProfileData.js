@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import { lensPath, lensProp, set, over, view } from "ramda";
+import { lensPath, lensProp, set, view } from "ramda";
 
 import ProfileLayout from "../ProfileLayout";
 import { DataContainer } from "../../shared";
@@ -51,31 +51,21 @@ const EditProfileData = () => {
   const onChangeStandard = e =>
     setFormFields(set(pathMap[e.target.id], e.target.value, formFields));
 
+  const onChangeForArrays = (e, path) => {
+    const dataCopy = swapItem(
+      view(path, formFields),
+      e.target.getAttribute("data-index"),
+      e.target.value
+    );
+    setFormFields(set(path, dataCopy, formFields));
+  };
+
   const swapItem = (arr, index, value) => {
     const copy = [...arr];
     copy.splice(index, 1, value);
     return copy;
   };
 
-  const onChangeHobbies = e => {
-    const path = pathMap.hobbies[e.target.getAttribute("name")];
-    const dataCopy = swapItem(
-      view(path, formFields),
-      e.target.getAttribute("data-index"),
-      e.target.value
-    );
-    setFormFields(set(path, dataCopy, formFields));
-  };
-
-  const onChangeLanguages = e => {
-    const path = pathMap[e.target.getAttribute("name")];
-    const dataCopy = swapItem(
-      view(path, formFields),
-      e.target.getAttribute("data-index"),
-      e.target.value
-    );
-    setFormFields(set(path, dataCopy, formFields));
-  };
   const handleFormSubmit = () => {
     dispatch({ type: UPDATE_AGE, payload: formFields.age });
     dispatch({ type: UPDATE_NAME, payload: formFields.name });
@@ -83,6 +73,26 @@ const EditProfileData = () => {
     dispatch({ type: UPDATE_HOBBIES, payload: formFields.hobbies });
     dispatch({ type: UPDATE_LANGUAGES, payload: formFields.languages });
   };
+
+  // const onChangeHobbies = e => {
+  //   const path = pathMap.hobbies[e.target.getAttribute("name")];
+  //   const dataCopy = swapItem(
+  //     view(path, formFields),
+  //     e.target.getAttribute("data-index"),
+  //     e.target.value
+  //   );
+  //   setFormFields(set(path, dataCopy, formFields));
+  // };
+
+  // const onChangeLanguages = e => {
+  //   const path = pathMap[e.target.getAttribute("name")];
+  //   const dataCopy = swapItem(
+  //     view(path, formFields),
+  //     e.target.getAttribute("data-index"),
+  //     e.target.value
+  //   );
+  //   setFormFields(set(path, dataCopy, formFields));
+  // };
 
   return formFields ? (
     <ProfileLayout>
@@ -127,7 +137,10 @@ const EditProfileData = () => {
                   data-index={i}
                   type="text"
                   value={hobby}
-                  onChange={onChangeHobbies}
+                  onChange={e => {
+                    const path = pathMap.hobbies[e.target.getAttribute("name")];
+                    onChangeForArrays(e, path);
+                  }}
                 ></input>
                 <br />
               </Fragment>
@@ -148,7 +161,10 @@ const EditProfileData = () => {
                   type="text"
                   data-index={i}
                   value={hobby}
-                  onChange={onChangeHobbies}
+                  onChange={e => {
+                    const path = pathMap.hobbies[e.target.getAttribute("name")];
+                    onChangeForArrays(e, path);
+                  }}
                 ></input>
                 <br />
               </Fragment>
@@ -169,7 +185,10 @@ const EditProfileData = () => {
                   name="languages"
                   type="text"
                   value={language}
-                  onChange={onChangeLanguages}
+                  onChange={e => {
+                    const path = pathMap[e.target.getAttribute("name")];
+                    onChangeForArrays(e, path);
+                  }}
                 ></input>
                 <br />
               </Fragment>
